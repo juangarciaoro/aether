@@ -34,6 +34,7 @@ import com.aether.feature.onboarding.OnboardingWelcomeScreen
 import com.aether.feature.onboarding.ProviderSetupScreen
 import com.aether.feature.player.PlayerScreen
 import com.aether.feature.search.SearchScreen
+import com.aether.feature.series.SeriesDetailScreen
 import com.aether.feature.series.SeriesScreen
 import com.aether.feature.settings.SettingsScreen
 import com.aether.feature.vod.VodScreen
@@ -175,6 +176,19 @@ private fun MainAppFlow(
                     onSeriesClick = { seriesId ->
                         navController.navigate("series_detail/$seriesId")
                     },
+                )
+            }
+            composable(
+                route = "series_detail/{seriesId}",
+                arguments = listOf(navArgument("seriesId") { type = NavType.StringType }),
+            ) { backStackEntry ->
+                val seriesId = backStackEntry.arguments?.getString("seriesId") ?: return@composable
+                SeriesDetailScreen(
+                    seriesId = seriesId,
+                    onEpisodeClick = { episodeUrl ->
+                        navController.navigate("player/$episodeUrl")
+                    },
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable("search") {

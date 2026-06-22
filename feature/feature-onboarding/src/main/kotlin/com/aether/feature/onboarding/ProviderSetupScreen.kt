@@ -8,12 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,7 +26,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aether.core.ui.components.AetherButton
+import com.aether.core.ui.theme.Error
 
 enum class ProviderType { XTREAM, M3U }
 
@@ -31,7 +36,9 @@ enum class ProviderType { XTREAM, M3U }
 fun ProviderSetupScreen(
     onProviderAdded: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: OnboardingViewModel = hiltViewModel(),
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     var selectedType by remember { mutableStateOf(ProviderType.XTREAM) }
     var serverUrl by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
@@ -77,17 +84,35 @@ fun ProviderSetupScreen(
             )
         }
 
+        if (uiState.error != null) {
+            Text(
+                text = uiState.error!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = Error,
+            )
+        }
+
         Spacer(modifier = Modifier.weight(1f))
 
         AetherButton(
-            text = "Conectar y sincronizar",
-            onClick = onProviderAdded,
+            onClick = {
+                when (selectedType) {
+                    ProviderType.XTREAM -> viewModel.connectXtream(serverUrl, username, password, onProviderAdded)
+                    ProviderType.M3U -> viewModel.connectM3u(m3uUrl, onProviderAdded)
+                }
+            },
             modifier = Modifier.fillMaxWidth(),
-            enabled = when (selectedType) {
+            enabled = !uiState.isConnecting && when (selectedType) {
                 ProviderType.XTREAM -> serverUrl.isNotBlank() && username.isNotBlank()
                 ProviderType.M3U -> m3uUrl.isNotBlank()
             },
-        )
+        ) {
+            if (uiState.isConnecting) {
+                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
+            } else {
+                Text("Conectar y sincronizar")
+            }
+        }
     }
 }
 

@@ -8,8 +8,11 @@ import com.aether.core.database.dao.WatchHistoryDao
 import com.aether.core.database.entity.ChannelEntity
 import com.aether.core.database.entity.WatchHistoryEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
@@ -29,14 +32,21 @@ class HomeViewModel @Inject constructor(
     private val channelDao: ChannelDao,
 ) : ViewModel() {
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val uiState = combine(
         watchHistoryDao.observeRecent(),
         favoriteDao.observeAll(),
-    ) { history, favorites ->
+        channelDao.observeByProvider(1L),
+    ) { history, favorites, allChannels ->
+        val favoriteIds = favorites.map { it.contentId }.toSet()
+        val favoriteChannels = allChannels.filter { it.id in favoriteIds }.take(10)
+        val recentChannels = allChannels.take(20).filter { it.id !in favoriteIds }.take(10)
         HomeUiState(
             isLoading = false,
             continueWatching = history.take(10),
-            favoriteChannels = emptyList(),
+            favoriteChannels = favoriteChannels,
+            recentChannels = recentChannels,
+            featuredChannel = allChannels.firstOrNull(),
         )
     }.stateIn(
         scope = viewModelScope,

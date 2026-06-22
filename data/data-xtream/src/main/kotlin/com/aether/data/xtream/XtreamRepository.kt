@@ -118,6 +118,13 @@ class XtreamRepository @Inject constructor(
         onFailure = { AetherResult.Error(it) },
     )
 
+    suspend fun getSeriesInfo(
+        baseUrl: String,
+        username: String,
+        password: String,
+        seriesId: Int,
+    ) = api.getSeriesInfo("$baseUrl/player_api.php", username, password, seriesId)
+
     fun buildLiveUrl(baseUrl: String, username: String, password: String, streamId: Int, ext: String = "ts") =
         "$baseUrl/live/$username/$password/$streamId.$ext"
 
