@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.aether.core.database.entity.SeriesEntity
+import com.aether.core.ui.components.ShimmerPosterCard
 
 @Composable
 fun SeriesScreen(
@@ -35,8 +36,12 @@ fun SeriesScreen(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(uiState.series, key = { it.id }) { series ->
-            SeriesPosterCard(series = series, onClick = { onSeriesClick(series.id) })
+        if (uiState.isLoading) {
+            items(12) { ShimmerPosterCard() }
+        } else {
+            items(uiState.series, key = { it.id }) { series ->
+                SeriesPosterCard(series = series, onClick = { onSeriesClick(series.id) })
+            }
         }
     }
 }

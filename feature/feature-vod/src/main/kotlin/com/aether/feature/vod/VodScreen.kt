@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
 import com.aether.core.database.entity.VodEntity
+import com.aether.core.ui.components.ShimmerPosterCard
+import com.aether.core.ui.components.shimmerEffect
 
 @Composable
 fun VodScreen(
@@ -35,8 +37,14 @@ fun VodScreen(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        items(uiState.vods, key = { it.id }) { vod ->
-            VodPosterCard(vod = vod, onClick = { onVodClick(vod.id) })
+        if (uiState.isLoading) {
+            items(12) {
+                ShimmerPosterCard()
+            }
+        } else {
+            items(uiState.vods, key = { it.id }) { vod ->
+                VodPosterCard(vod = vod, onClick = { onVodClick(vod.id) })
+            }
         }
     }
 }
