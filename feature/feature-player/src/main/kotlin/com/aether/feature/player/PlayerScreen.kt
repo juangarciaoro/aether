@@ -4,20 +4,18 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.ui.PlayerView
@@ -51,7 +49,16 @@ fun PlayerScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black),
+            .background(Color.Black)
+            .focusable()
+            .tvPlayerKeyEvents(
+                onPlayPause = viewModel::togglePlayPause,
+                onSeekBack = { viewModel.seekRelative(-10_000) },
+                onSeekForward = { viewModel.seekRelative(10_000) },
+                onBack = onBack,
+                onChannelUp = viewModel::showControlsTemporarily,
+                onChannelDown = viewModel::showControlsTemporarily,
+            ),
     ) {
         if (uiState.isMultiScreen && uiState.multiScreenStreams.isNotEmpty()) {
             MultiScreenLayout(
