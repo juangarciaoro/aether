@@ -8,7 +8,7 @@ android {
 
 dependencies {
     implementation(project(":core:core-player"))
-    implementation(project(":core:core-database"))
+    api(project(":core:core-database"))
     implementation(project(":core:core-datastore"))
     implementation(project(":data:data-epg"))
 }
