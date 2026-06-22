@@ -2,6 +2,7 @@ package com.aether.feature.live
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aether.core.database.dao.CategoryDao
 import com.aether.core.database.dao.ChannelDao
 import com.aether.core.database.dao.EpgDao
 import com.aether.core.database.entity.CategoryEntity
@@ -29,6 +30,7 @@ data class LiveUiState(
 @HiltViewModel
 class LiveViewModel @Inject constructor(
     private val channelDao: ChannelDao,
+    private val categoryDao: CategoryDao,
     private val epgDao: EpgDao,
 ) : ViewModel() {
 
@@ -36,23 +38,30 @@ class LiveViewModel @Inject constructor(
     private val _selectedCategory = MutableStateFlow<String?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState = combine(
+    private val channels = combine(
         _searchQuery,
         _selectedCategory,
-    ) { query, category ->
-        Pair(query, category)
-    }.flatMapLatest { (query, category) ->
-        if (query.isBlank()) {
-            if (category != null) channelDao.observeByCategory(category)
-            else channelDao.observeByProvider(1L)
-        } else {
-            channelDao.search(query)
+    ) { query, category -> Pair(query, category) }
+        .flatMapLatest { (query, category) ->
+            if (query.isBlank()) {
+                if (category != null) channelDao.observeByCategory(category)
+                else channelDao.observeByProvider(1L)
+            } else {
+                channelDao.search(query)
+            }
         }
-    }.combine(_searchQuery) { channels, query ->
+
+    val uiState = combine(
+        channels,
+        categoryDao.observeByType("live"),
+        _searchQuery,
+        _selectedCategory,
+    ) { channels, categories, query, selectedCategory ->
         LiveUiState(
             channels = channels,
+            categories = categories,
             searchQuery = query,
-            selectedCategory = _selectedCategory.value,
+            selectedCategory = selectedCategory,
         )
     }.stateIn(
         scope = viewModelScope,

@@ -43,6 +43,7 @@ private const val ARG_STREAM_URL = "streamUrl"
 @Composable
 fun AetherNavHost(
     deviceType: DeviceType,
+    onPlayerVisibilityChange: (Boolean) -> Unit = {},
     viewModel: NavViewModel = hiltViewModel(),
 ) {
     val onboardingComplete by viewModel.onboardingComplete.collectAsState(initial = false)
@@ -57,6 +58,7 @@ fun AetherNavHost(
         MainAppFlow(
             navController = navController,
             deviceType = deviceType,
+            onPlayerVisibilityChange = onPlayerVisibilityChange,
         )
     }
 }
@@ -87,6 +89,7 @@ private fun OnboardingFlow(
 private fun MainAppFlow(
     navController: NavHostController,
     deviceType: DeviceType,
+    onPlayerVisibilityChange: (Boolean) -> Unit,
 ) {
     val bottomNavItems = listOf(
         BottomNavItem("home", Icons.Rounded.Home, "Inicio"),
@@ -99,7 +102,12 @@ private fun MainAppFlow(
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val showBottomBar = currentRoute?.startsWith("player") == false
+    val isPlayerRoute = currentRoute?.startsWith("player") == true
+    val showBottomBar = !isPlayerRoute
+
+    androidx.compose.runtime.LaunchedEffect(isPlayerRoute) {
+        onPlayerVisibilityChange(isPlayerRoute)
+    }
 
     Scaffold(
         bottomBar = {

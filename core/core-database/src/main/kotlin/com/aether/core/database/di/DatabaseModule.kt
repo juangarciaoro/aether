@@ -3,6 +3,7 @@ package com.aether.core.database.di
 import android.content.Context
 import androidx.room.Room
 import com.aether.core.database.AetherDatabase
+import com.aether.core.database.dao.CategoryDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,6 +27,7 @@ object DatabaseModule {
     @Provides fun providesWatchHistoryDao(db: AetherDatabase) = db.watchHistoryDao()
     @Provides fun providesFavoriteDao(db: AetherDatabase) = db.favoriteDao()
     @Provides fun providesProviderDao(db: AetherDatabase) = db.providerDao()
+    @Provides fun providesCategoryDao(db: AetherDatabase): CategoryDao = db.categoryDao()
     @Provides fun providesVodDao(db: AetherDatabase) = db.vodDao()
     @Provides fun providesSeriesDao(db: AetherDatabase) = db.seriesDao()
 }

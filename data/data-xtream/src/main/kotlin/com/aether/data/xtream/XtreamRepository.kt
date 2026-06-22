@@ -1,14 +1,15 @@
 package com.aether.data.xtream
 
 import com.aether.core.common.result.AetherResult
+import com.aether.core.database.dao.CategoryDao
 import com.aether.core.database.dao.ChannelDao
 import com.aether.core.database.dao.ProviderDao
 import com.aether.core.database.dao.VodDao
+import com.aether.core.database.entity.CategoryEntity
 import com.aether.core.database.entity.ChannelEntity
 import com.aether.core.database.entity.VodEntity
 import com.aether.data.xtream.api.XtreamApi
 import com.aether.data.xtream.model.XtreamAuthResponse
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,6 +17,7 @@ import javax.inject.Singleton
 class XtreamRepository @Inject constructor(
     private val api: XtreamApi,
     private val channelDao: ChannelDao,
+    private val categoryDao: CategoryDao,
     private val vodDao: VodDao,
     private val providerDao: ProviderDao,
 ) {
@@ -27,6 +29,30 @@ class XtreamRepository @Inject constructor(
     ): AetherResult<XtreamAuthResponse> = runCatching {
         val playerApiUrl = "$baseUrl/player_api.php"
         api.authenticate(playerApiUrl, username, password)
+    }.fold(
+        onSuccess = { AetherResult.Success(it) },
+        onFailure = { AetherResult.Error(it) },
+    )
+
+    suspend fun syncLiveCategories(
+        providerId: Long,
+        baseUrl: String,
+        username: String,
+        password: String,
+    ): AetherResult<Int> = runCatching {
+        val playerApiUrl = "$baseUrl/player_api.php"
+        val categories = api.getLiveCategories(playerApiUrl, username, password)
+        val entities = categories.mapIndexed { index, cat ->
+            CategoryEntity(
+                id = cat.categoryId,
+                providerId = providerId,
+                name = cat.categoryName,
+                type = "live",
+                sortOrder = index,
+            )
+        }
+        categoryDao.upsertAll(entities)
+        entities.size
     }.fold(
         onSuccess = { AetherResult.Success(it) },
         onFailure = { AetherResult.Error(it) },

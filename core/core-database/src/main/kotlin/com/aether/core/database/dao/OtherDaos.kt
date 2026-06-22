@@ -12,6 +12,21 @@ import com.aether.core.database.entity.WatchHistoryEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
+interface CategoryDao {
+    @Upsert
+    suspend fun upsertAll(categories: List<CategoryEntity>)
+
+    @Query("SELECT * FROM categories WHERE type = :type ORDER BY sortOrder ASC")
+    fun observeByType(type: String): Flow<List<CategoryEntity>>
+
+    @Query("SELECT * FROM categories WHERE providerId = :providerId AND type = :type ORDER BY sortOrder ASC")
+    fun observeByProviderAndType(providerId: Long, type: String): Flow<List<CategoryEntity>>
+
+    @Query("DELETE FROM categories WHERE providerId = :providerId")
+    suspend fun deleteByProvider(providerId: Long)
+}
+
+@Dao
 interface ProviderDao {
     @Upsert
     suspend fun upsert(provider: ProviderEntity): Long

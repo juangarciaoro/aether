@@ -21,6 +21,9 @@ interface EpgDao {
     @Query("SELECT * FROM epg_programs WHERE channelTvgId = :tvgId AND startTime >= :from AND startTime < :to ORDER BY startTime ASC")
     fun observeForTimeRange(tvgId: String, from: Long, to: Long): Flow<List<EpgProgramEntity>>
 
+    @Query("SELECT * FROM epg_programs WHERE startTime < :to AND endTime > :from ORDER BY channelTvgId, startTime ASC")
+    fun observeAllForTimeRange(from: Long, to: Long): Flow<List<EpgProgramEntity>>
+
     @Query("DELETE FROM epg_programs WHERE endTime < :before")
     suspend fun deleteOldPrograms(before: Long)
 }

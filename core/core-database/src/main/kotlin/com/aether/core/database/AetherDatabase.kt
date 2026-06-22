@@ -3,6 +3,7 @@ package com.aether.core.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.aether.core.database.dao.CategoryDao
 import com.aether.core.database.dao.ChannelDao
 import com.aether.core.database.dao.EpgDao
 import com.aether.core.database.dao.FavoriteDao
@@ -41,6 +42,7 @@ abstract class AetherDatabase : RoomDatabase() {
     abstract fun watchHistoryDao(): WatchHistoryDao
     abstract fun favoriteDao(): FavoriteDao
     abstract fun providerDao(): ProviderDao
+    abstract fun categoryDao(): CategoryDao
     abstract fun vodDao(): VodDao
     abstract fun seriesDao(): SeriesDao
 }
