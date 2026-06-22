@@ -37,6 +37,7 @@ import com.aether.feature.search.SearchScreen
 import com.aether.feature.series.SeriesDetailScreen
 import com.aether.feature.series.SeriesScreen
 import com.aether.feature.settings.SettingsScreen
+import com.aether.feature.vod.VodDetailScreen
 import com.aether.feature.vod.VodScreen
 
 private const val ARG_STREAM_URL = "streamUrl"
@@ -146,7 +147,7 @@ private fun MainAppFlow(
                         navController.navigate("player/${channelId}")
                     },
                     onVodClick = { vodId ->
-                        navController.navigate("player/${vodId}")
+                        navController.navigate("vod_detail/${vodId}")
                     },
                 )
             }
@@ -167,8 +168,19 @@ private fun MainAppFlow(
             composable("vod") {
                 VodScreen(
                     onVodClick = { vodId ->
-                        navController.navigate("player/${vodId}")
+                        navController.navigate("vod_detail/$vodId")
                     },
+                )
+            }
+            composable(
+                route = "vod_detail/{vodId}",
+                arguments = listOf(navArgument("vodId") { type = NavType.StringType }),
+            ) { backStackEntry ->
+                val vodId = backStackEntry.arguments?.getString("vodId") ?: return@composable
+                VodDetailScreen(
+                    vodId = vodId,
+                    onPlay = { streamUrl -> navController.navigate("player/$streamUrl") },
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable("series") {
