@@ -21,6 +21,7 @@ dependencies {
     api(libs.navigation.compose)
     api(libs.hilt.navigation.compose)
     implementation(libs.palette)
+    implementation(libs.compose.ui.google.fonts)
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
     debugImplementation(libs.compose.ui.tooling)

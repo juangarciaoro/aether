@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AETHER launcher icon — stylized "A" with neon glow on void background -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Glow ring -->
+    <path
+        android:fillColor="#337C6CFF"
+        android:pathData="M54,18 C34.1,18 18,34.1 18,54 C18,73.9 34.1,90 54,90 C73.9,90 90,73.9 90,54 C90,34.1 73.9,18 54,18 Z M54,22 C71.7,22 86,36.3 86,54 C86,71.7 71.7,86 54,86 C36.3,86 22,71.7 22,54 C22,36.3 36.3,22 54,22 Z" />
+
+    <!-- Letter A — Space Grotesk style -->
+    <path
+        android:fillColor="#7C6CFF"
+        android:pathData="M54,28 L32,78 L38.5,78 L44,64 L64,64 L69.5,78 L76,78 L54,28 Z
+                          M54,37 L62,58 L46,58 L54,37 Z" />
+
+    <!-- Center bar of A -->
+    <path
+        android:fillColor="#7C6CFF"
+        android:pathData="M46,58 L62,58 L62,64 L46,64 Z" />
+
+    <!-- Plasma accent dot -->
+    <path
+        android:fillColor="#FF6B9D"
+        android:pathData="M79,29 A4,4 0,0,1 83,33 A4,4 0,0,1 79,37 A4,4 0,0,1 75,33 A4,4 0,0,1 79,29 Z" />
+</vector>

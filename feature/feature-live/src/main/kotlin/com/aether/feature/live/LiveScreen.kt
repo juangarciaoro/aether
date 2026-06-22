@@ -106,6 +106,7 @@ private fun ChannelListItem(
             model = channel.logoUrl,
             contentDescription = channel.name,
             modifier = Modifier.size(48.dp),
+            contentScale = androidx.compose.ui.layout.ContentScale.Fit,
         )
         Spacer(modifier = Modifier.width(12.dp))
         Column(modifier = Modifier.weight(1f)) {

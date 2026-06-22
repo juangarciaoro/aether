@@ -5,7 +5,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import com.aether.core.common.device.DeviceType
 import com.aether.core.common.device.getDeviceType
 import com.aether.core.ui.theme.AetherTheme
 import com.aether.navigation.AetherNavHost
