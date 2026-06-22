@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- TV banner placeholder: 320x180dp - replace with actual banner before release -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#050508" />
-    <size android:width="320dp" android:height="180dp" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background: Void color -->
+    <item>
+        <shape>
+            <solid android:color="#050508" />
+        </shape>
+    </item>
+    <!-- Subtle radial glow in center -->
+    <item>
+        <shape>
+            <gradient
+                android:type="radial"
+                android:gradientRadius="50%"
+                android:startColor="#1A147C6C"
+                android:endColor="#00050508"
+                android:centerX="0.5"
+                android:centerY="0.5" />
+        </shape>
+    </item>
+    <!-- "A" icon circle -->
+    <item
+        android:top="40dp"
+        android:bottom="40dp"
+        android:left="32dp"
+        android:right="196dp">
+        <shape android:shape="oval">
+            <solid android:color="#1A7C6CFF" />
+            <stroke android:width="2dp" android:color="#7C6CFF" />
+        </shape>
+    </item>
+</layer-list>

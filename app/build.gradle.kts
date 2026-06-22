@@ -51,7 +51,10 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
+    implementation(libs.workmanager)
+    implementation(libs.hilt.work)
     ksp(libs.hilt.compiler)
+    ksp(libs.hilt.work.compiler)
 
     // Core modules
     implementation(project(":core:core-common"))
