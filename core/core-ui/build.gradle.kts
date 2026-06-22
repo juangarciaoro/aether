@@ -1,9 +1,11 @@
 plugins {
     alias(libs.plugins.aether.library)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
     namespace = "com.aether.core.ui"
+    buildFeatures.compose = true
 }
 
 dependencies {

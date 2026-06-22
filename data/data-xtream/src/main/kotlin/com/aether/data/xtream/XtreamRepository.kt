@@ -123,7 +123,7 @@ class XtreamRepository @Inject constructor(
         username: String,
         password: String,
         seriesId: Int,
-    ) = api.getSeriesInfo("$baseUrl/player_api.php", username, password, seriesId)
+    ) = api.getSeriesInfo("$baseUrl/player_api.php", username, password, seriesId = seriesId)
 
     fun buildLiveUrl(baseUrl: String, username: String, password: String, streamId: Int, ext: String = "ts") =
         "$baseUrl/live/$username/$password/$streamId.$ext"
