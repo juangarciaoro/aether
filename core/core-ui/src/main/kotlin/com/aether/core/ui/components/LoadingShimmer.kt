@@ -8,27 +8,20 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.aether.core.ui.theme.Cosmic
 import com.aether.core.ui.theme.CosmicLight
 
-fun Modifier.shimmerEffect(): Modifier {
-    return this
-}
-
-@Composable
-fun ShimmerBox(modifier: Modifier = Modifier) {
+fun Modifier.shimmerEffect(): Modifier = composed {
     val infiniteTransition = rememberInfiniteTransition(label = "shimmer")
     val translateAnim by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -39,20 +32,18 @@ fun ShimmerBox(modifier: Modifier = Modifier) {
         ),
         label = "shimmerTranslate",
     )
-
-    val shimmerColors = listOf(
-        Cosmic,
-        CosmicLight,
-        Cosmic,
+    background(
+        brush = Brush.linearGradient(
+            colors = listOf(Cosmic, CosmicLight, Cosmic),
+            start = Offset(translateAnim - 300f, 0f),
+            end = Offset(translateAnim, 0f),
+        ),
     )
+}
 
-    val brush = Brush.linearGradient(
-        colors = shimmerColors,
-        start = Offset(translateAnim - 300f, 0f),
-        end = Offset(translateAnim, 0f),
-    )
-
-    Box(modifier = modifier.background(brush))
+@Composable
+fun ShimmerBox(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.shimmerEffect())
 }
 
 @Composable

@@ -205,14 +205,14 @@ private fun MainAppFlow(
             }
             composable("search") {
                 SearchScreen(
-                    onChannelClick = { navController.navigate("player/$it") },
-                    onVodClick = { navController.navigate("player/$it") },
-                    onSeriesClick = { navController.navigate("series/$it") },
+                    onChannelClick = { streamUrl -> navController.navigate("player/$streamUrl") },
+                    onVodClick = { vodId -> navController.navigate("vod_detail/$vodId") },
+                    onSeriesClick = { seriesId -> navController.navigate("series_detail/$seriesId") },
                 )
             }
             composable("settings") {
                 SettingsScreen(
-                    onManageProviders = { navController.navigate("settings_providers") },
+                    onManageProviders = { navController.navigate("onboarding_setup") },
                 )
             }
             composable(

@@ -1,5 +1,6 @@
 package com.aether.feature.settings
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,7 @@ fun SettingsScreen(
             headlineContent = { Text("Gestionar proveedores") },
             supportingContent = { Text("Añadir, editar o eliminar fuentes") },
             leadingContent = { Icon(Icons.Rounded.Satellite, contentDescription = null) },
+            modifier = Modifier.clickable(onClick = onManageProviders),
         )
         HorizontalDivider()
 

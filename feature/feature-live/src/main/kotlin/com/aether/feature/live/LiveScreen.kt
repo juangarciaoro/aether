@@ -28,10 +28,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aether.core.database.entity.ChannelEntity
 import com.aether.core.ui.components.LiveBadge
+import com.aether.core.ui.components.shimmerEffect
 
 @Composable
 fun LiveScreen(
@@ -76,14 +78,56 @@ fun LiveScreen(
         }
 
         LazyColumn(modifier = Modifier.fillMaxSize()) {
-            items(uiState.channels, key = { it.id }) { channel ->
-                ChannelListItem(
-                    channel = channel,
-                    currentProgram = uiState.currentPrograms[channel.tvgId],
-                    onClick = { onChannelClick(channel.id) },
-                )
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+            if (uiState.isLoading) {
+                items(8) {
+                    ShimmerChannelListItem()
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                }
+            } else {
+                items(uiState.channels, key = { it.id }) { channel ->
+                    ChannelListItem(
+                        channel = channel,
+                        currentProgram = uiState.currentPrograms[channel.tvgId],
+                        onClick = { onChannelClick(channel.id) },
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                }
             }
+        }
+    }
+}
+
+@Composable
+private fun ShimmerChannelListItem(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(androidx.compose.foundation.shape.CircleShape)
+                .shimmerEffect(),
+        )
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.6f)
+                    .height(16.dp)
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                    .shimmerEffect(),
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            androidx.compose.foundation.layout.Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(12.dp)
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(4.dp))
+                    .shimmerEffect(),
+            )
         }
     }
 }
