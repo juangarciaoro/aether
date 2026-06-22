@@ -22,7 +22,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.ui.PlayerView
 import com.aether.core.player.buildAetherPlayer
-import kotlinx.coroutines.delay
 
 @Composable
 fun PlayerScreen(
@@ -54,18 +53,28 @@ fun PlayerScreen(
             .fillMaxSize()
             .background(Color.Black),
     ) {
-        AndroidView(
-            factory = { ctx ->
-                PlayerView(ctx).apply {
-                    this.player = player
-                    useController = false
-                }
-            },
-            modifier = Modifier.fillMaxSize(),
-        )
+        if (uiState.isMultiScreen && uiState.multiScreenStreams.isNotEmpty()) {
+            MultiScreenLayout(
+                streams = uiState.multiScreenStreams,
+                activeIndex = uiState.activeMultiScreenIndex,
+                onStreamSelect = viewModel::selectMultiScreenStream,
+                onRemoveStream = viewModel::removeMultiScreenStream,
+                modifier = Modifier.fillMaxSize(),
+            )
+        } else {
+            AndroidView(
+                factory = { ctx ->
+                    PlayerView(ctx).apply {
+                        this.player = player
+                        useController = false
+                    }
+                },
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
 
         AnimatedVisibility(
-            visible = uiState.showControls,
+            visible = uiState.showControls || uiState.isMultiScreen,
             enter = fadeIn(),
             exit = fadeOut(),
             modifier = Modifier.fillMaxSize(),
@@ -76,6 +85,7 @@ fun PlayerScreen(
                 onSeekBack = { viewModel.seekRelative(-10_000) },
                 onSeekForward = { viewModel.seekRelative(10_000) },
                 onBack = onBack,
+                onToggleMultiScreen = { viewModel.toggleMultiScreen(streamUrl) },
             )
         }
     }

@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.FastForward
 import androidx.compose.material.icons.rounded.FastRewind
+import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ fun PlayerControls(
     onSeekBack: () -> Unit,
     onSeekForward: () -> Unit,
     onBack: () -> Unit,
+    onToggleMultiScreen: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Box(
@@ -47,6 +49,7 @@ fun PlayerControls(
                 .fillMaxWidth()
                 .padding(16.dp)
                 .align(Alignment.TopStart),
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             IconButton(onClick = onBack) {
                 Icon(
@@ -56,6 +59,10 @@ fun PlayerControls(
                     modifier = Modifier.size(24.dp),
                 )
             }
+            MultiScreenToggleButton(
+                isMultiScreen = uiState.isMultiScreen,
+                onClick = onToggleMultiScreen,
+            )
         }
 
         // Center controls

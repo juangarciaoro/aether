@@ -20,6 +20,9 @@ data class PlayerUiState(
     val currentPosition: Long = 0L,
     val duration: Long = 0L,
     val error: String? = null,
+    val isMultiScreen: Boolean = false,
+    val multiScreenStreams: List<StreamSlot> = emptyList(),
+    val activeMultiScreenIndex: Int = 0,
 )
 
 @HiltViewModel
@@ -85,5 +88,41 @@ class PlayerViewModel @Inject constructor() : ViewModel() {
             delay(controlsHideDelay)
             _uiState.update { it.copy(showControls = false) }
         }
+    }
+
+    fun toggleMultiScreen(currentUrl: String) {
+        _uiState.update { state ->
+            if (state.isMultiScreen) {
+                state.copy(isMultiScreen = false, multiScreenStreams = emptyList())
+            } else {
+                state.copy(
+                    isMultiScreen = true,
+                    multiScreenStreams = listOf(StreamSlot(url = currentUrl)),
+                    activeMultiScreenIndex = 0,
+                )
+            }
+        }
+    }
+
+    fun addMultiScreenStream(url: String) {
+        _uiState.update { state ->
+            if (state.multiScreenStreams.size >= 4) return@update state
+            state.copy(multiScreenStreams = state.multiScreenStreams + StreamSlot(url = url))
+        }
+    }
+
+    fun removeMultiScreenStream(index: Int) {
+        _uiState.update { state ->
+            val newStreams = state.multiScreenStreams.toMutableList().apply { removeAt(index) }
+            state.copy(
+                multiScreenStreams = newStreams,
+                activeMultiScreenIndex = if (state.activeMultiScreenIndex >= newStreams.size) 0 else state.activeMultiScreenIndex,
+                isMultiScreen = newStreams.isNotEmpty(),
+            )
+        }
+    }
+
+    fun selectMultiScreenStream(index: Int) {
+        _uiState.update { it.copy(activeMultiScreenIndex = index) }
     }
 }
